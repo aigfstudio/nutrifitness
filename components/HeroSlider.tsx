@@ -113,14 +113,14 @@ export function HeroSlider({ banners }: HeroSliderProps) {
             >
               <Link
                 href={slide.cta_link ?? '/products'}
-                className="bg-primary text-white px-8 py-3.5 text-sm font-bold tracking-wider hover:bg-primary-dark transition-colors inline-block"
+                className="bg-primary text-white px-8 py-3.5 text-sm font-bold tracking-wider hover:bg-primary-dark transition-all duration-300 inline-block shadow-glow hover:shadow-glow-hover hover:-translate-y-0.5 rounded-sm"
               >
                 {slide.cta_text ?? 'SHOP NOW'}
               </Link>
               {slide.cta2_text && (
                 <Link
                   href={slide.cta2_link ?? '/products'}
-                  className="bg-transparent text-white border border-white/30 px-8 py-3.5 text-sm font-bold tracking-wider hover:border-white/60 hover:bg-white/5 transition-colors inline-block"
+                  className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-3.5 text-sm font-bold tracking-wider hover:border-white/50 hover:bg-white/20 transition-all duration-300 inline-block rounded-sm hover:-translate-y-0.5"
                 >
                   {slide.cta2_text}
                 </Link>

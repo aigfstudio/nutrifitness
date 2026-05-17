@@ -21,10 +21,16 @@ async function getData() {
     supabase.from('products').select('*').eq('is_featured', true).eq('in_stock', true).order('sort_order').limit(8),
     supabase.from('products').select('*').eq('is_new', true).eq('in_stock', true).order('created_at', { ascending: false }).limit(4),
   ])
+  let featured = (featuredResult.data ?? []) as Product[]
+  if (featured.length === 0) {
+    const fallback = await supabase.from('products').select('*').eq('in_stock', true).order('sort_order').limit(8)
+    featured = (fallback.data ?? []) as Product[]
+  }
+
   return {
     banners: (bannersResult.data ?? []) as Banner[],
     categories: (categoriesResult.data ?? []) as Category[],
-    featured: (featuredResult.data ?? []) as Product[],
+    featured,
     newProducts: (newResult.data ?? []) as Product[],
   }
 }
@@ -47,15 +53,15 @@ export default async function HomePage() {
                 <Link
                   key={cat.id}
                   href={`/products?category=${cat.slug}`}
-                  className="group flex flex-col items-center gap-2 p-3 border border-gray-border hover:border-primary transition-colors text-center"
+                  className="group flex flex-col items-center gap-3 p-4 border border-gray-border/60 rounded-xl hover:shadow-glow-hover hover:border-primary transition-all duration-300 text-center bg-gray-50/50"
                 >
                   <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white text-[10px] font-black tracking-wider group-hover:scale-110 transition-transform"
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-white text-[11px] font-black tracking-wider group-hover:scale-110 shadow-sm transition-transform duration-300"
                     style={{ background: cat.bg_color }}
                   >
                     {cat.abbr}
                   </div>
-                  <span className="text-[11px] font-bold text-dark leading-tight">{cat.name}</span>
+                  <span className="text-[11px] font-bold text-dark leading-tight uppercase tracking-wider">{cat.name}</span>
                 </Link>
               ))}
             </div>
@@ -67,13 +73,16 @@ export default async function HomePage() {
       {featured.length > 0 && (
         <section className="bg-gray-light py-10 px-4">
           <div className="max-w-[1400px] mx-auto">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-4xl text-dark tracking-wide">BEST SELLERS</h2>
-              <Link href="/products" className="text-primary text-sm font-bold hover:text-primary-dark transition-colors">
-                View All →
+            <div className="flex items-end justify-between mb-8 border-b border-gray-border/60 pb-4">
+              <h2 className="font-display text-4xl text-dark tracking-wide relative">
+                BEST SELLERS
+                <span className="absolute -bottom-[17px] left-0 w-16 h-1 bg-primary shadow-glow"></span>
+              </h2>
+              <Link href="/products" className="text-primary text-sm font-bold hover:text-primary-dark transition-colors flex items-center gap-1 group">
+                View All <span className="group-hover:translate-x-1 transition-transform">→</span>
               </Link>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {featured.map((product, i) => (
                 <ProductCard key={product.id} product={product} priority={i < 4} />
               ))}
@@ -123,22 +132,22 @@ export default async function HomePage() {
       {newProducts.length > 0 && (
         <section className="py-10 px-4">
           <div className="max-w-[1400px] mx-auto">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <div className="inline-block bg-primary text-white text-[10px] font-bold tracking-[2px] px-2 py-1 mb-2">NEW</div>
-                <h2 className="font-display text-4xl text-dark tracking-wide">NEW ON THE DROP</h2>
+              <div className="flex items-end justify-between mb-8">
+                <div>
+                  <div className="inline-block bg-primary text-white text-[10px] font-bold tracking-[2px] px-2 py-1 mb-2 rounded-sm shadow-glow">NEW</div>
+                  <h2 className="font-display text-4xl text-dark tracking-wide">NEW ON THE DROP</h2>
+                </div>
+                <Link href="/products?new=true" className="text-primary text-sm font-bold hover:text-primary-dark transition-colors flex items-center gap-1 group">
+                  View All <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </Link>
               </div>
-              <Link href="/products?new=true" className="text-primary text-sm font-bold hover:text-primary-dark transition-colors">
-                View All →
-              </Link>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+                {newProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-              {newProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
+          </section>
       )}
 
       {/* Why NutriFitness */}

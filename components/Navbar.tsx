@@ -67,8 +67,8 @@ export function Navbar() {
 
       {/* Main navbar */}
       <nav
-        className={`bg-white border-b border-gray-border sticky top-0 z-50 transition-shadow ${
-          scrolled ? 'shadow-md' : ''
+        className={`bg-white/85 backdrop-blur-md border-b border-gray-border/60 sticky top-0 z-50 transition-all duration-300 ${
+          scrolled ? 'shadow-sm py-0' : 'py-1'
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-4 flex items-center gap-4 h-16">
@@ -100,11 +100,11 @@ export function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="What can we help you find today?"
-              className="flex-1 border border-r-0 border-gray-border px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
+              className="flex-1 border border-r-0 border-gray-border/60 bg-gray-50/50 px-4 py-2.5 text-sm focus:outline-none focus:border-primary transition-colors"
             />
             <button
               type="submit"
-              className="bg-dark text-white px-4 py-2.5 text-sm hover:bg-dark-2 transition-colors"
+              className="bg-dark text-white px-5 py-2.5 text-sm hover:bg-primary transition-colors duration-300 shadow-sm"
             >
               🔍
             </button>
@@ -135,12 +135,12 @@ export function Navbar() {
             {/* Cart */}
             <button
               onClick={openCart}
-              className="flex flex-col items-center text-xs font-semibold text-dark hover:text-primary transition-colors relative"
+              className="flex flex-col items-center text-xs font-semibold text-dark hover:text-primary transition-colors duration-300 relative group"
             >
-              <span className="text-xl mb-0.5">🛒</span>
+              <span className="text-xl mb-0.5 group-hover:scale-110 transition-transform">🛒</span>
               <span>Cart</span>
               {itemCount > 0 && (
-                <span className="absolute -top-1 -right-2 bg-primary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-3 bg-primary text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-glow">
                   {itemCount > 99 ? '99+' : itemCount}
                 </span>
               )}

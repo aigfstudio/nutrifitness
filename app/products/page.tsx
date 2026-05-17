@@ -131,11 +131,11 @@ export default async function ProductsPage({ searchParams }: PageProps) {
 
           {/* Grid */}
           {products.length === 0 ? (
-            <div className="text-center py-20">
-              <div className="text-5xl mb-4">🔍</div>
-              <h2 className="font-display text-2xl text-dark mb-2">NO PRODUCTS FOUND</h2>
-              <p className="text-gray-400 text-sm mb-6">Try a different category or search term.</p>
-              <a href="/products" className="bg-primary text-white px-8 py-3 text-sm font-bold tracking-wider hover:bg-primary-dark transition-colors inline-block">
+            <div className="text-center py-24 bg-gray-50/50 rounded-xl border border-gray-border/60">
+              <div className="text-6xl mb-6 opacity-30">🔍</div>
+              <h2 className="font-display text-3xl text-dark mb-2 tracking-wider">NO PRODUCTS FOUND</h2>
+              <p className="text-gray-400 text-sm mb-8">Try adjusting your filters or search term.</p>
+              <a href="/products" className="bg-primary text-white px-8 py-3.5 text-sm font-bold tracking-wider hover:bg-primary-dark transition-all duration-300 shadow-glow hover:shadow-glow-hover hover:-translate-y-0.5 inline-block rounded-sm">
                 VIEW ALL PRODUCTS
               </a>
             </div>
