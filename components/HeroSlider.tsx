@@ -1,165 +1,75 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import type { Banner } from '@/lib/types'
 
-interface HeroSliderProps {
-  banners: Banner[]
-}
-
-export function HeroSlider({ banners }: HeroSliderProps) {
-  const [current, setCurrent] = useState(0)
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
-
-  const slides = banners.length > 0
-    ? banners
-    : [
-        {
-          id: '1',
-          title: 'BUILD YOUR BEST BODY',
-          subtitle: 'Premium Swiss nutrition. Keto, protein & performance supplements delivered to your door.',
-          badge: 'New Drop 2025',
-          cta_text: 'SHOP NOW',
-          cta_link: '/products',
-          cta2_text: 'VIEW KETO RANGE',
-          cta2_link: '/products?category=keto',
-          bg_color: '#080808',
-          image_url: null,
-          is_active: true,
-          sort_order: 1,
-          created_at: '',
-          updated_at: '',
-        } as Banner,
-      ]
-
-  const next = useCallback(() => setCurrent((c) => (c + 1) % slides.length), [slides.length])
-  const prev = useCallback(() => setCurrent((c) => (c - 1 + slides.length) % slides.length), [slides.length])
-
-  useEffect(() => {
-    if (!isAutoPlaying || slides.length <= 1) return
-    const timer = setInterval(next, 5000)
-    return () => clearInterval(timer)
-  }, [isAutoPlaying, next, slides.length])
-
-  const slide = slides[current]
-
+export function HeroSlider() {
   return (
-    <div
-      className="relative overflow-hidden"
-      style={{ minHeight: 420 }}
-      onMouseEnter={() => setIsAutoPlaying(false)}
-      onMouseLeave={() => setIsAutoPlaying(true)}
-    >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current}
-          initial={{ opacity: 0, x: 60 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -60 }}
-          transition={{ duration: 0.5, ease: 'easeInOut' }}
-          className="absolute inset-0"
-          style={{ background: slide.bg_color }}
-        >
-          {/* Decorative circles */}
-          <div className="absolute -right-20 -top-20 w-96 h-96 rounded-full border-[80px] border-primary/5 pointer-events-none" />
-          <div className="absolute right-16 -bottom-16 w-56 h-56 rounded-full border-[40px] border-primary/5 pointer-events-none" />
-          <div className="absolute left-1/2 top-1/2 w-[600px] h-[600px] rounded-full border border-primary/5 pointer-events-none transform -translate-x-1/2 -translate-y-1/2" />
-
-          <div className="relative z-10 max-w-[1400px] mx-auto px-6 py-16 sm:py-24">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.4 }}
-            >
-              {slide.badge && (
-                <div className="inline-block bg-primary text-white text-[11px] font-bold tracking-[2px] px-3 py-1.5 mb-5 uppercase">
-                  {slide.badge}
-                </div>
-              )}
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="font-display text-6xl sm:text-8xl text-white leading-none mb-4 max-w-2xl"
-            >
-              {slide.title.split('|').map((line, i) => (
-                <span
-                  key={i}
-                  className={`block ${i === 1 ? 'text-primary' : 'text-white'}`}
-                >
-                  {line}
-                </span>
-              ))}
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.4 }}
-              className="text-gray-400 text-sm sm:text-base max-w-sm mb-8 leading-relaxed"
-            >
-              {slide.subtitle}
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.4 }}
-              className="flex flex-wrap gap-3"
-            >
-              <Link
-                href={slide.cta_link ?? '/products'}
-                className="bg-primary text-white px-8 py-3.5 text-sm font-bold tracking-wider hover:bg-primary-dark transition-all duration-300 inline-block shadow-glow hover:shadow-glow-hover hover:-translate-y-0.5 rounded-sm"
-              >
-                {slide.cta_text ?? 'SHOP NOW'}
-              </Link>
-              {slide.cta2_text && (
-                <Link
-                  href={slide.cta2_link ?? '/products'}
-                  className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-3.5 text-sm font-bold tracking-wider hover:border-white/50 hover:bg-white/20 transition-all duration-300 inline-block rounded-sm hover:-translate-y-0.5"
-                >
-                  {slide.cta2_text}
-                </Link>
-              )}
-            </motion.div>
+    <div className="max-w-[1400px] mx-auto px-0 sm:px-4 mt-4">
+      <div className="relative overflow-hidden bg-gradient-to-r from-[#e11c2a] via-[#f12c3a] to-[#ff4747] text-white flex flex-col md:flex-row items-stretch min-h-[460px]">
+        
+        {/* Left Side: Vertical SALE banner (Clean White Panel) */}
+        <div className="bg-white text-dark flex flex-col items-center justify-between py-6 px-4 md:w-36 flex-shrink-0 border-r border-gray-100 hidden sm:flex">
+          <div className="text-center">
+            <span className="text-[10px] font-bold tracking-[2px] text-gray-400 block uppercase leading-none mb-1">
+              Get Ready
+            </span>
+            <span className="text-[10px] font-bold tracking-[2px] text-gray-400 block uppercase leading-none">
+              For Summer
+            </span>
           </div>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Prev/Next buttons */}
-      {slides.length > 1 && (
-        <>
-          <button
-            onClick={prev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/10 border border-white/20 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
-          >
-            ‹
-          </button>
-          <button
-            onClick={next}
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/10 border border-white/20 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
-          >
-            ›
-          </button>
-
-          {/* Dots */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  i === current ? 'w-7 bg-primary' : 'w-2 bg-white/30'
-                }`}
-              />
+          
+          <div className="flex flex-col items-center gap-1.5 my-6">
+            {['S', 'A', 'L', 'E'].map((letter, idx) => (
+              <span 
+                key={idx} 
+                className="font-display font-black text-4xl text-primary leading-none"
+              >
+                {letter}
+              </span>
             ))}
           </div>
-        </>
-      )}
+          
+          <div className="w-8 h-1 bg-primary"></div>
+        </div>
+
+        {/* Center/Right Side: Main Promotional Message */}
+        <div className="flex-1 flex flex-col justify-center px-6 py-12 md:px-16 relative z-10">
+          
+          {/* Subtle tropical/hibiscus geometric background overlays */}
+          <div className="absolute inset-0 opacity-10 pointer-events-none select-none overflow-hidden">
+            <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full border-[60px] border-white" />
+            <div className="absolute left-1/3 bottom-10 w-96 h-96 rounded-full border-[30px] border-white" />
+          </div>
+
+          <div className="relative z-10 max-w-3xl">
+            <h3 className="font-display font-black text-4xl sm:text-6xl tracking-tight leading-none uppercase text-white mb-2">
+              BUY 1, GET 1
+            </h3>
+            
+            <h1 className="font-display font-black text-7xl sm:text-9xl tracking-tighter leading-none text-white uppercase drop-shadow-md mb-6">
+              50% OFF!
+            </h1>
+
+            <h2 className="font-display font-bold text-2xl sm:text-4xl text-[#FFE600] tracking-wide uppercase leading-tight mb-2">
+              LOOK YOUR BEST. FEEL YOUR BEST. AND SAVE!
+            </h2>
+
+            <p className="text-sm sm:text-base font-bold text-white/90 tracking-wide uppercase mb-8">
+              NEW ITEMS ADDED. THIS WEEK ONLY.{' '}
+              <span className="text-white/70 font-normal">In stores and online. Limited time.</span>
+            </p>
+
+            <div>
+              <Link
+                href="/products"
+                className="inline-block bg-white text-dark hover:bg-dark hover:text-white px-10 py-4 text-xs font-black tracking-widest uppercase transition-all duration-300 shadow-lg rounded-sm"
+              >
+                SHOP NOW
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

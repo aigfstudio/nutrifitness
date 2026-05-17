@@ -39,29 +39,19 @@ export default async function HomePage() {
   const { banners, categories, featured, newProducts } = await getData()
 
   return (
-    <div className="page-transition">
-      {/* Hero Slider */}
-      <HeroSlider banners={banners} />
-
-      {/* Category Strip */}
+    <div className="page-transition bg-white">
+      {/* Category Pills Strip (Now above Hero Banner) */}
       {categories.length > 0 && (
-        <section className="bg-white border-b border-gray-border py-8 px-4">
+        <section className="bg-white py-6 px-4">
           <div className="max-w-[1400px] mx-auto">
-            <h2 className="font-display text-2xl text-dark mb-5 tracking-wide">SHOP BY CATEGORY</h2>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-3">
+            <div className="flex flex-wrap justify-center gap-3">
               {categories.map((cat) => (
                 <Link
                   key={cat.id}
                   href={`/products?category=${cat.slug}`}
-                  className="group flex flex-col items-center gap-3 p-4 border border-gray-border/60 rounded-xl hover:shadow-glow-hover hover:border-primary transition-all duration-300 text-center bg-gray-50/50"
+                  className="px-6 py-3 border-2 border-gray-100 hover:border-dark text-xs font-black tracking-widest text-[#1a1a1a] bg-white transition-all uppercase rounded-sm hover:bg-gray-50"
                 >
-                  <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center text-white text-[11px] font-black tracking-wider group-hover:scale-110 shadow-sm transition-transform duration-300"
-                    style={{ background: cat.bg_color }}
-                  >
-                    {cat.abbr}
-                  </div>
-                  <span className="text-[11px] font-bold text-dark leading-tight uppercase tracking-wider">{cat.name}</span>
+                  {cat.name}
                 </Link>
               ))}
             </div>
@@ -69,20 +59,21 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Best Sellers */}
+      {/* Hero Banner (BUY 1, GET 1 50% OFF) */}
+      <HeroSlider />
+
+      {/* Brands on Sale Section (Replaces Best Sellers style) */}
       {featured.length > 0 && (
-        <section className="bg-gray-light py-10 px-4">
+        <section className="bg-white py-12 px-4">
           <div className="max-w-[1400px] mx-auto">
-            <div className="flex items-end justify-between mb-8 border-b border-gray-border/60 pb-4">
-              <h2 className="font-display text-4xl text-dark tracking-wide relative">
-                BEST SELLERS
-                <span className="absolute -bottom-[17px] left-0 w-16 h-1 bg-primary shadow-glow"></span>
+            <div className="text-center mb-10">
+              <h2 className="font-display font-black text-4xl sm:text-5xl text-dark tracking-wide uppercase">
+                BRANDS ON SALE
               </h2>
-              <Link href="/products" className="text-primary text-sm font-bold hover:text-primary-dark transition-colors flex items-center gap-1 group">
-                View All <span className="group-hover:translate-x-1 transition-transform">→</span>
-              </Link>
+              <div className="w-16 h-1 bg-primary mx-auto mt-2"></div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
               {featured.map((product, i) => (
                 <ProductCard key={product.id} product={product} priority={i < 4} />
               ))}
