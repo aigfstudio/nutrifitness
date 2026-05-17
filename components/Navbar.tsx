@@ -39,6 +39,7 @@ export function Navbar() {
 
   const subNavLinks = [
     { label: 'ALL PRODUCTS', href: '/products' },
+    { label: 'BLOG', href: '/blog' },
     { label: 'PROTEINS', href: '/products?category=Proteins' },
     { label: 'PRE-WORKOUT', href: '/products?category=Pre Workout' },
     { label: 'CREATINE', href: '/products?category=CREATINE' },
