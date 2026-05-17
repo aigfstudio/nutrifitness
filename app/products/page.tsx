@@ -87,7 +87,7 @@ export default async function ProductsPage({ searchParams }: PageProps) {
   const activeCategory = searchParams.category ?? ''
   const searchQuery = searchParams.q ?? ''
 
-  const activeCategoryLabel = SHOP_CATEGORIES.find(c => c.slug === activeCategory)?.name ?? activeCategory || 'All Products'
+  const activeCategoryLabel = (SHOP_CATEGORIES.find(c => c.slug === activeCategory)?.name ?? activeCategory) || 'All Products'
 
   return (
     <div className="bg-white min-h-screen">
