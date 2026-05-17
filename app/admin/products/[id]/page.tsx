@@ -18,7 +18,7 @@ const EMPTY: ProductForm = {
   weight_g: null, flavors: [], images: [],
   in_stock: true, is_featured: false, is_new: false,
   badge_text: '', badge_color: '#c8102e',
-  rating: 0, review_count: 0, tags: [], sort_order: 0,
+  rating: 0, review_count: 0, tags: [],
   stock_quantity: 0,
 }
 
@@ -348,10 +348,6 @@ export default function AdminProductEditPage({ params }: PageProps) {
               </div>
             </label>
           ))}
-          <div>
-            <Label>Sort Order</Label>
-            <input type="number" value={form.sort_order} onChange={set('sort_order')} className={INPUT} />
-          </div>
         </div>
       </Section>
 

@@ -46,7 +46,7 @@ export default async function ProductsPage({ searchParams }: PageProps) {
   else if (sort === 'price_desc') query = query.order('price', { ascending: false })
   else if (sort === 'newest') query = query.order('created_at', { ascending: false })
   else if (sort === 'rating') query = query.order('rating', { ascending: false })
-  else query = query.order('is_featured', { ascending: false }).order('sort_order')
+  else query = query.order('is_featured', { ascending: false }).order('created_at', { ascending: false })
 
   const { data, count } = await query.range(from, to)
 

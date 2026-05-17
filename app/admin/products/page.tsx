@@ -18,7 +18,7 @@ export default function AdminProductsPage() {
     const { data } = await supabase
       .from('products')
       .select('*')
-      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false })
     setProducts((data ?? []) as Product[])
     setLoading(false)
   }
