@@ -13,114 +13,141 @@ export const metadata: Metadata = {
 
 export const revalidate = 60
 
+// Exact category values from the DB (from CSV import)
+const HARDCODED_CATEGORIES = [
+  { id: '1', name: 'Proteins',          slug: 'Proteins',          icon: '💪' },
+  { id: '2', name: 'Pre Workout',       slug: 'Pre Workout',       icon: '⚡' },
+  { id: '3', name: 'Creatine',          slug: 'CREATINE',          icon: '🔥' },
+  { id: '4', name: 'Whey / Isolate',    slug: 'WHEY/ISOLATE',      icon: '🥛' },
+  { id: '5', name: 'Weight Loss',       slug: 'Weight Loss',       icon: '⚖️' },
+  { id: '6', name: 'Vitamins',          slug: 'Vitamins & Minerals', icon: '🌿' },
+  { id: '7', name: 'Mass Gainer',       slug: 'Mass Gainer',       icon: '📈' },
+  { id: '8', name: 'Snacks',            slug: 'SNACKS',            icon: '🍫' },
+  { id: '9', name: 'Ashwagandha',       slug: 'ASHWAGANDHA',       icon: '🌱' },
+  { id: '10', name: 'Omega 3',          slug: 'OMEGA 3',           icon: '🐟' },
+  { id: '11', name: 'Post Workout',     slug: 'Post Workout',      icon: '🔄' },
+  { id: '12', name: 'Energy & Recovery', slug: 'ÉNERGIE - RÉCUPÉRATION', icon: '⚡' },
+]
+
 async function getData() {
   try {
     const supabase = createServerSupabaseClient()
-    const [bannersResult, categoriesResult, featuredResult, newResult] = await Promise.all([
-      supabase.from('banners').select('*').limit(5),
-      supabase.from('categories').select('*').limit(12),
-      supabase.from('products').select('*').limit(8),
-      supabase.from('products').select('*').limit(4),
+
+    const [featuredResult, newResult] = await Promise.all([
+      supabase.from('products').select('*').eq('is_featured', true).limit(8),
+      supabase.from('products').select('*').eq('is_new', true).limit(4),
     ])
-    
+
     let featured = (featuredResult.data ?? []) as Product[]
     if (featured.length === 0) {
       const fallback = await supabase.from('products').select('*').limit(8)
       featured = (fallback.data ?? []) as Product[]
     }
 
-    let categories = (categoriesResult.data ?? []) as Category[]
-    if (categories.length === 0) {
-      categories = [
-        { id: '1', name: 'Proteins', slug: 'Proteins' } as Category,
-        { id: '2', name: 'Pre Workout', slug: 'Pre Workout' } as Category,
-        { id: '3', name: 'Creatine', slug: 'CREATINE' } as Category,
-        { id: '4', name: 'Vitamins', slug: 'Vitamins & Minerals' } as Category,
-        { id: '5', name: 'Weight Loss', slug: 'Weight Loss' } as Category,
-        { id: '6', name: 'Snacks', slug: 'SNACKS' } as Category,
-      ]
+    let newProducts = (newResult.data ?? []) as Product[]
+    if (newProducts.length === 0) {
+      const fallback = await supabase.from('products').select('*').range(8, 11)
+      newProducts = (fallback.data ?? []) as Product[]
     }
 
-    return {
-      banners: (bannersResult.data ?? []) as Banner[],
-      categories,
-      featured,
-      newProducts: (newResult.data ?? []) as Product[],
-    }
+    return { featured, newProducts }
   } catch (error) {
     console.error('SERVER FETCH ERROR IN app/page.tsx:', error)
-    return {
-      banners: [],
-      categories: [],
-      featured: [],
-      newProducts: []
-    }
+    return { featured: [], newProducts: [] }
   }
 }
 
 export default async function HomePage() {
-  const { banners, categories, featured, newProducts } = await getData()
+  const { featured, newProducts } = await getData()
 
   return (
     <div className="page-transition bg-white">
-      {/* Category Pills Strip (Now above Hero Banner) */}
-      {categories.length > 0 && (
-        <section className="bg-white py-6 px-4">
-          <div className="max-w-[1400px] mx-auto">
-            <div className="flex flex-wrap justify-center gap-3">
-              {categories.map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/products?category=${cat.slug}`}
-                  className="px-6 py-3 border-2 border-gray-100 hover:border-dark text-xs font-black tracking-widest text-[#1a1a1a] bg-white transition-all uppercase rounded-sm hover:bg-gray-50"
-                >
-                  {cat.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
-      {/* Hero Banner (BUY 1, GET 1 50% OFF) */}
+      {/* ── Category Pills Strip ── */}
+      <section className="bg-white border-b border-gray-100 py-5 px-4 overflow-x-auto">
+        <div className="max-w-[1400px] mx-auto">
+          <div className="flex gap-2 min-w-max mx-auto justify-center flex-wrap">
+            {HARDCODED_CATEGORIES.map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/products?category=${encodeURIComponent(cat.slug)}`}
+                className="flex items-center gap-1.5 px-5 py-2.5 border-2 border-gray-200 hover:border-[#c8102e] hover:text-[#c8102e] text-xs font-black tracking-widest text-dark bg-white transition-all uppercase rounded-sm hover:bg-red-50 whitespace-nowrap"
+              >
+                <span>{cat.icon}</span>
+                {cat.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Hero Banner ── */}
       <HeroSlider />
 
-      {/* Brands on Sale Section (Replaces Best Sellers style) */}
+      {/* ── Featured Products ── */}
       {featured.length > 0 && (
         <section className="bg-white py-12 px-4">
           <div className="max-w-[1400px] mx-auto">
-            <div className="text-center mb-10">
-              <h2 className="font-display font-black text-4xl sm:text-5xl text-dark tracking-wide uppercase">
-                BRANDS ON SALE
-              </h2>
-              <div className="w-16 h-1 bg-primary mx-auto mt-2"></div>
+            <div className="flex items-end justify-between mb-8">
+              <div>
+                <div className="text-xs font-bold tracking-[3px] text-gray-400 uppercase mb-2">Top Picks</div>
+                <h2 className="font-display font-black text-4xl sm:text-5xl text-dark tracking-wide uppercase">
+                  BRANDS ON SALE
+                </h2>
+                <div className="w-16 h-1 bg-[#c8102e] mt-2" />
+              </div>
+              <Link
+                href="/products"
+                className="text-[#c8102e] text-sm font-bold hover:underline flex items-center gap-1 group"
+              >
+                View All <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </Link>
             </div>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {featured.map((product, i) => (
-                <ProductCard key={product.id} product={product} priority={i < 4} />
+                <ProductCard key={product.id} product={product} priority={i < 5} />
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* Pro/Membership Banner */}
-      <section className="bg-dark py-12 px-4">
+      {/* ── Category Grid Section ── */}
+      <section className="bg-gray-50 py-12 px-4">
+        <div className="max-w-[1400px] mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="font-display font-black text-4xl text-dark tracking-wide uppercase">SHOP BY CATEGORY</h2>
+            <div className="w-16 h-1 bg-[#c8102e] mx-auto mt-2" />
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {HARDCODED_CATEGORIES.slice(0, 12).map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/products?category=${encodeURIComponent(cat.slug)}`}
+                className="group flex flex-col items-center justify-center gap-2 bg-white border-2 border-gray-100 hover:border-[#c8102e] p-5 rounded-sm transition-all hover:-translate-y-1 hover:shadow-md"
+              >
+                <div className="text-3xl">{cat.icon}</div>
+                <div className="text-[11px] font-black tracking-widest text-dark uppercase text-center group-hover:text-[#c8102e] transition-colors leading-tight">
+                  {cat.name}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PRO Membership Banner ── */}
+      <section className="bg-[#111] py-12 px-4">
         <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
-            <div className="text-gray-500 text-xs font-bold tracking-[3px] uppercase mb-3">
-              Exclusive Membership
-            </div>
+            <div className="text-gray-500 text-xs font-bold tracking-[3px] uppercase mb-3">Exclusive Membership</div>
             <h2 className="font-display text-5xl text-white mb-3 leading-none">
-              NUTRIFIT <span className="text-primary">PRO ACCESS</span>
+              NUTRIFIT <span className="text-[#c8102e]">PRO ACCESS</span>
             </h2>
-            <p className="text-gray-400 text-sm">
-              BOGO deals · Cash back rewards · Free shipping & more
-            </p>
+            <p className="text-gray-400 text-sm">BOGO deals · Cash back rewards · Free shipping & more</p>
           </div>
           <div className="w-full md:w-auto md:min-w-[320px]">
-            <div className="inline-block bg-primary text-white text-[10px] font-bold tracking-[2px] px-3 py-1.5 mb-4 uppercase">
+            <div className="inline-block bg-[#c8102e] text-white text-[10px] font-bold tracking-[2px] px-3 py-1.5 mb-4 uppercase">
               IT PAYS TO GO PRO
             </div>
             <ul className="space-y-2 mb-6">
@@ -131,59 +158,42 @@ export default async function HomePage() {
                 'FREE shipping on every order',
               ].map((perk) => (
                 <li key={perk} className="flex items-center gap-2 text-gray-300 text-sm">
-                  <span className="text-primary font-bold">✓</span> {perk}
+                  <span className="text-[#c8102e] font-bold">✓</span> {perk}
                 </li>
               ))}
             </ul>
-            <button className="bg-white text-dark px-8 py-3.5 text-sm font-bold tracking-wider hover:bg-gray-light transition-colors">
+            <Link
+              href="/account"
+              className="block text-center bg-white text-dark px-8 py-3.5 text-sm font-bold tracking-wider hover:bg-gray-100 transition-colors"
+            >
               ADD PRO ACCESS — CHF 39.99
-            </button>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* New Arrivals */}
+      {/* ── New Arrivals ── */}
       {newProducts.length > 0 && (
-        <section className="py-10 px-4">
+        <section className="py-12 px-4">
           <div className="max-w-[1400px] mx-auto">
-              <div className="flex items-end justify-between mb-8">
-                <div>
-                  <div className="inline-block bg-primary text-white text-[10px] font-bold tracking-[2px] px-2 py-1 mb-2 rounded-sm shadow-glow">NEW</div>
-                  <h2 className="font-display text-4xl text-dark tracking-wide">NEW ON THE DROP</h2>
-                </div>
-                <Link href="/products?new=true" className="text-primary text-sm font-bold hover:text-primary-dark transition-colors flex items-center gap-1 group">
-                  View All <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </Link>
+            <div className="flex items-end justify-between mb-8">
+              <div>
+                <div className="inline-block bg-[#c8102e] text-white text-[10px] font-bold tracking-[2px] px-2 py-1 mb-2 uppercase">NEW</div>
+                <h2 className="font-display text-4xl text-dark tracking-wide">NEW ON THE DROP</h2>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-                {newProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
+              <Link href="/products?new=true" className="text-[#c8102e] text-sm font-bold hover:underline flex items-center gap-1 group">
+                View All <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </Link>
             </div>
-          </section>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {newProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
       )}
 
-      {/* Why NutriFitness */}
-      <section className="bg-dark py-12 px-4">
-        <div className="max-w-[1400px] mx-auto text-center">
-          <h2 className="font-display text-4xl text-white mb-2">WHY NUTRIFITNESS?</h2>
-          <p className="text-gray-400 text-sm mb-10">Swiss precision. Sports performance. Real results.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {[
-              { icon: '🇨🇭', title: 'Swiss Quality', text: 'Every product lab-tested and certified to the highest Swiss standards.' },
-              { icon: '⚡', title: 'Performance Formulas', text: 'Clinically dosed ingredients. No proprietary blends. No compromises.' },
-              { icon: '🚚', title: 'Fast Delivery', text: 'Free shipping over CHF 79. Most orders delivered within 2 working days.' },
-            ].map((item) => (
-              <div key={item.title} className="bg-dark-2 border border-dark-3 p-8 text-center">
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <h3 className="font-display text-xl text-white mb-2">{item.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{item.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
