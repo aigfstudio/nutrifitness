@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 import type { Offer, Product } from '@/lib/types'
 
 const EMPTY = {
-  name: '', offer_type: 'percentage' as const,
+  name: '', offer_type: 'percentage' as Offer['offer_type'],
   discount_value: 0, product_id: null as string | null,
   category: '', is_active: true, start_date: '', end_date: '',
 }
