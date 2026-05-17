@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { ProductCard } from '@/components/ProductCard'
 import { ShopControls } from '@/components/ShopControls'
+import { Search } from 'lucide-react'
 import type { Product } from '@/lib/types'
 
 export const metadata: Metadata = {
@@ -199,7 +200,7 @@ export default async function ProductsPage({ searchParams }: PageProps) {
 
             {products.length === 0 ? (
               <div className="text-center py-24 bg-gray-50 border border-gray-100">
-                <div className="text-6xl mb-6 opacity-30">🔍</div>
+                <div className="flex justify-center mb-6 text-gray-300 opacity-50"><Search size={72} strokeWidth={1} /></div>
                 <h2 className="font-display text-3xl text-dark mb-2 tracking-wider">NO PRODUCTS FOUND</h2>
                 <p className="text-gray-400 text-sm mb-8">Try adjusting your filters or search term.</p>
                 <Link

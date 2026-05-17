@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { Microscope, Star, Handshake, MapPin, Truck } from 'lucide-react'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -54,23 +55,23 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
               {
-                icon: '🔬',
+                icon: <Microscope size={28} />,
                 title: 'Matières premières premium',
                 desc: 'Des ingrédients naturels et purs pour des résultats optimaux et une sécurité totale.'
               },
               {
-                icon: '⭐️',
+                icon: <Star size={28} />,
                 title: 'Les mieux notés et évalués',
                 desc: 'Des compléments hautement évalués et testés pour garantir leur qualité et efficacité.'
               },
               {
-                icon: '🤝',
+                icon: <Handshake size={28} />,
                 title: 'La confiance des experts',
                 desc: 'Fiabilité et excellence reconnues par les professionnels de la santé et du sport.'
               }
             ].map(v => (
               <div key={v.title} className="p-6 border border-gray-100 rounded-sm bg-gray-50/50">
-                <div className="text-3xl mb-3">{v.icon}</div>
+                <div className="mb-3 text-dark">{v.icon}</div>
                 <div className="font-bold text-dark mb-2 text-sm">{v.title}</div>
                 <div className="text-xs text-gray-500 leading-relaxed">{v.desc}</div>
               </div>
@@ -82,7 +83,7 @@ export default function AboutPage() {
         <div className="border-t border-b border-gray-100 py-10 my-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex gap-4">
-              <div className="text-4xl">📍</div>
+              <div className="text-[#c8102e]"><MapPin size={36} strokeWidth={1.5} /></div>
               <div>
                 <h3 className="font-bold text-dark mb-1">Une présence locale à Genève</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">
@@ -91,7 +92,7 @@ export default function AboutPage() {
               </div>
             </div>
             <div className="flex gap-4">
-              <div className="text-4xl">🚚</div>
+              <div className="text-[#c8102e]"><Truck size={36} strokeWidth={1.5} /></div>
               <div>
                 <h3 className="font-bold text-dark mb-1">Une livraison rapide dans toute la Suisse</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">

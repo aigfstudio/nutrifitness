@@ -4,6 +4,7 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { HeroSlider } from '@/components/HeroSlider'
 import { ProductCard } from '@/components/ProductCard'
 import type { Banner, Category, Product } from '@/lib/types'
+import { Dumbbell, Zap, Flame, Milk, Scale, Leaf, TrendingUp, Cookie, LeafyGreen, Fish, RotateCw } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'NutriFitness.ch — Premium Swiss Supplements',
@@ -15,18 +16,18 @@ export const revalidate = 60
 
 // Exact category values from the DB (from CSV import)
 const HARDCODED_CATEGORIES = [
-  { id: '1', name: 'Proteins',          slug: 'Proteins',          icon: '💪' },
-  { id: '2', name: 'Pre Workout',       slug: 'Pre Workout',       icon: '⚡' },
-  { id: '3', name: 'Creatine',          slug: 'CREATINE',          icon: '🔥' },
-  { id: '4', name: 'Whey / Isolate',    slug: 'WHEY/ISOLATE',      icon: '🥛' },
-  { id: '5', name: 'Weight Loss',       slug: 'Weight Loss',       icon: '⚖️' },
-  { id: '6', name: 'Vitamins',          slug: 'Vitamins & Minerals', icon: '🌿' },
-  { id: '7', name: 'Mass Gainer',       slug: 'Mass Gainer',       icon: '📈' },
-  { id: '8', name: 'Snacks',            slug: 'SNACKS',            icon: '🍫' },
-  { id: '9', name: 'Ashwagandha',       slug: 'ASHWAGANDHA',       icon: '🌱' },
-  { id: '10', name: 'Omega 3',          slug: 'OMEGA 3',           icon: '🐟' },
-  { id: '11', name: 'Post Workout',     slug: 'Post Workout',      icon: '🔄' },
-  { id: '12', name: 'Energy & Recovery', slug: 'ÉNERGIE - RÉCUPÉRATION', icon: '⚡' },
+  { id: '1', name: 'Proteins',          slug: 'Proteins',          icon: <Dumbbell size={24} /> },
+  { id: '2', name: 'Pre Workout',       slug: 'Pre Workout',       icon: <Zap size={24} /> },
+  { id: '3', name: 'Creatine',          slug: 'CREATINE',          icon: <Flame size={24} /> },
+  { id: '4', name: 'Whey / Isolate',    slug: 'WHEY/ISOLATE',      icon: <Milk size={24} /> },
+  { id: '5', name: 'Weight Loss',       slug: 'Weight Loss',       icon: <Scale size={24} /> },
+  { id: '6', name: 'Vitamins',          slug: 'Vitamins & Minerals', icon: <Leaf size={24} /> },
+  { id: '7', name: 'Mass Gainer',       slug: 'Mass Gainer',       icon: <TrendingUp size={24} /> },
+  { id: '8', name: 'Snacks',            slug: 'SNACKS',            icon: <Cookie size={24} /> },
+  { id: '9', name: 'Ashwagandha',       slug: 'ASHWAGANDHA',       icon: <LeafyGreen size={24} /> },
+  { id: '10', name: 'Omega 3',          slug: 'OMEGA 3',           icon: <Fish size={24} /> },
+  { id: '11', name: 'Post Workout',     slug: 'Post Workout',      icon: <RotateCw size={24} /> },
+  { id: '12', name: 'Energy & Recovery', slug: 'ÉNERGIE - RÉCUPÉRATION', icon: <Zap size={24} /> },
 ]
 
 async function getData() {

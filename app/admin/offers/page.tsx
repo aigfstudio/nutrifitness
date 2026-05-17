@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import type { Offer, Product } from '@/lib/types'
+import { Tag } from 'lucide-react'
 
 const EMPTY = {
   name: '', offer_type: 'percentage' as Offer['offer_type'],
@@ -163,7 +164,7 @@ export default function AdminOffersPage() {
         <div className="flex justify-center py-12"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>
       ) : offers.length === 0 ? (
         <div className="bg-white border border-gray-border p-12 text-center">
-          <div className="text-5xl mb-4">🏷</div>
+          <div className="flex justify-center mb-4 text-gray-300"><Tag size={64} strokeWidth={1} /></div>
           <h3 className="font-display text-2xl text-dark mb-2">NO OFFERS YET</h3>
           <p className="text-gray-400 text-sm">Create your first deal to boost sales.</p>
         </div>

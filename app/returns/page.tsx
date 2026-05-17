@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { Package, Lock, Mail } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Politique de Retour | NutriFitness.ch',
@@ -16,12 +17,12 @@ export default function ReturnsPage() {
       <div className="max-w-[800px] mx-auto px-4 py-12 space-y-8">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           {[
-            { icon: '📦', title: '14 Jours', sub: 'Délai de retour dès réception' },
-            { icon: '🔒', title: 'Non Ouvert', sub: 'Produit scellé et en bon état' },
-            { icon: '📩', title: 'Contact Préalable', sub: 'Contactez-nous avant le renvoi' },
+            { icon: <Package size={36} strokeWidth={1.5} />, title: '14 Jours', sub: 'Délai de retour dès réception' },
+            { icon: <Lock size={36} strokeWidth={1.5} />, title: 'Non Ouvert', sub: 'Produit scellé et en bon état' },
+            { icon: <Mail size={36} strokeWidth={1.5} />, title: 'Contact Préalable', sub: 'Contactez-nous avant le renvoi' },
           ].map(item => (
             <div key={item.title} className="text-center border border-gray-100 p-6 rounded-sm bg-gray-50/20">
-              <div className="text-4xl mb-2">{item.icon}</div>
+              <div className="flex justify-center mb-3 text-[#c8102e]">{item.icon}</div>
               <div className="font-black text-dark text-xl">{item.title}</div>
               <div className="text-xs text-gray-500 mt-1">{item.sub}</div>
             </div>

@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import type { Profile, Order } from '@/lib/types'
 import type { User } from '@supabase/supabase-js'
+import { LayoutDashboard, Package, User as UserIcon, Heart, CheckCircle, Clock, LogOut } from 'lucide-react'
 
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -18,10 +19,10 @@ const STATUS_COLORS: Record<string, string> = {
 }
 
 const NAV_ITEMS = [
-  { id: 'dashboard', label: '📊 Dashboard', icon: '📊' },
-  { id: 'orders', label: '📦 My Orders', icon: '📦' },
-  { id: 'profile', label: '👤 Profile', icon: '👤' },
-  { id: 'wishlist', label: '♥ Wishlist', icon: '♥' },
+  { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+  { id: 'orders', label: 'My Orders', icon: <Package size={18} /> },
+  { id: 'profile', label: 'Profile', icon: <UserIcon size={18} /> },
+  { id: 'wishlist', label: 'Wishlist', icon: <Heart size={18} /> },
 ]
 
 export default function AccountPage() {
@@ -96,7 +97,7 @@ export default function AccountPage() {
         <aside className="lg:col-span-1">
           <div className="bg-white border border-gray-border p-4 mb-4 text-center">
             <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center mx-auto mb-3 text-2xl">
-              {profile?.full_name?.charAt(0)?.toUpperCase() ?? '👤'}
+              {profile?.full_name?.charAt(0)?.toUpperCase() ?? <UserIcon size={32} />}
             </div>
             <div className="font-bold text-dark">{profile?.full_name ?? 'Customer'}</div>
             <div className="text-xs text-gray-400 truncate">{user?.email}</div>
@@ -121,14 +122,14 @@ export default function AccountPage() {
                     : 'border-l-transparent text-gray-500 hover:text-dark hover:bg-gray-light'
                 }`}
               >
-                {item.label}
+                <div className="flex items-center gap-2">{item.icon} {item.label}</div>
               </button>
             ))}
             <button
               onClick={handleSignOut}
-              className="w-full text-left px-4 py-3 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors border-t border-gray-border"
+              className="w-full flex items-center gap-2 text-left px-4 py-3 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors border-t border-gray-border"
             >
-              🚪 Sign Out
+              <LogOut size={18} /> Sign Out
             </button>
           </nav>
         </aside>
@@ -141,12 +142,12 @@ export default function AccountPage() {
               <h2 className="font-display text-2xl text-dark mb-4">DASHBOARD</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                 {[
-                  { label: 'Total Orders', value: orders.length, icon: '📦' },
-                  { label: 'Completed', value: orders.filter(o => o.status === 'delivered').length, icon: '✅' },
-                  { label: 'Pending', value: orders.filter(o => o.status === 'pending').length, icon: '⏳' },
+                  { label: 'Total Orders', value: orders.length, icon: <Package size={32} /> },
+                  { label: 'Completed', value: orders.filter(o => o.status === 'delivered').length, icon: <CheckCircle size={32} /> },
+                  { label: 'Pending', value: orders.filter(o => o.status === 'pending').length, icon: <Clock size={32} /> },
                 ].map(stat => (
                   <div key={stat.label} className="bg-white border border-gray-border p-5">
-                    <div className="text-3xl mb-2">{stat.icon}</div>
+                    <div className="text-gray-400 mb-3">{stat.icon}</div>
                     <div className="font-display text-3xl text-dark">{stat.value}</div>
                     <div className="text-xs font-bold tracking-wider text-gray-400 uppercase">{stat.label}</div>
                   </div>
@@ -190,7 +191,7 @@ export default function AccountPage() {
               <h2 className="font-display text-2xl text-dark mb-4">MY ORDERS</h2>
               {orders.length === 0 ? (
                 <div className="bg-white border border-gray-border p-12 text-center">
-                  <div className="text-5xl mb-4">📦</div>
+                  <div className="flex justify-center mb-4 text-gray-300"><Package size={64} strokeWidth={1} /></div>
                   <h3 className="font-display text-2xl text-dark mb-2">NO ORDERS YET</h3>
                   <p className="text-gray-400 text-sm mb-6">Time to get shopping!</p>
                   <Link href="/products" className="bg-primary text-white px-8 py-3 text-sm font-bold tracking-wider hover:bg-primary-dark transition-colors inline-block">
@@ -307,7 +308,7 @@ export default function AccountPage() {
             <div>
               <h2 className="font-display text-2xl text-dark mb-4">MY WISHLIST</h2>
               <div className="bg-white border border-gray-border p-12 text-center">
-                <div className="text-5xl mb-4">♥</div>
+                <div className="flex justify-center mb-4 text-gray-300"><Heart size={64} strokeWidth={1} /></div>
                 <h3 className="font-display text-2xl text-dark mb-2">YOUR WISHLIST IS EMPTY</h3>
                 <p className="text-gray-400 text-sm mb-6">Save items you love for later!</p>
                 <Link href="/products" className="bg-primary text-white px-8 py-3 text-sm font-bold tracking-wider hover:bg-primary-dark transition-colors inline-block">

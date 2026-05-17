@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { Product } from '@/lib/types'
 import Image from 'next/image'
+import { Search, Camera, Package, ShoppingCart, Printer } from 'lucide-react'
 
 export default function POSPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -148,7 +149,7 @@ export default function POSPage() {
       <div className="flex-1 flex flex-col bg-white rounded-xl shadow-sm border border-gray-border overflow-hidden">
         <div className="p-4 border-b border-gray-border bg-gray-50 flex items-center gap-4">
           <div className="flex-1 relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               ref={searchInputRef}
               type="text"
@@ -164,7 +165,7 @@ export default function POSPage() {
             onClick={() => { searchInputRef.current?.focus() }}
             className="px-4 py-3 bg-dark text-white rounded-lg font-bold flex items-center gap-2 hover:bg-dark-2 transition-colors"
           >
-            <span>📷</span> Scan QR
+            <Camera size={20} /> Scan QR
           </button>
         </div>
 
@@ -183,7 +184,7 @@ export default function POSPage() {
                     {product.images && product.images[0] ? (
                       <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
                     ) : (
-                      <span className="text-4xl">📦</span>
+                      <Package size={40} className="text-gray-300" />
                     )}
                   </div>
                   <div className="font-bold text-sm text-dark line-clamp-2 leading-tight flex-1">
@@ -232,7 +233,7 @@ export default function POSPage() {
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-4">
-              <span className="text-5xl">🛒</span>
+              <ShoppingCart size={64} className="text-gray-300" strokeWidth={1} />
               <p>Cart is empty</p>
             </div>
           ) : (
@@ -357,7 +358,7 @@ export default function POSPage() {
                 onClick={printInvoice}
                 className="flex-1 py-2 px-4 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
               >
-                🖨 Print Receipt
+                <Printer size={18} /> Print Receipt
               </button>
             </div>
             

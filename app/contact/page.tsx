@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { MapPin, Phone, Mail, Clock } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Contactez-nous | NutriFitness.ch',
@@ -20,18 +21,18 @@ export default function ContactPage() {
             <div className="text-xs font-black tracking-widest text-[#c8102e] uppercase mb-4">Nos Coordonnées</div>
             <div className="space-y-5">
               {[
-                { icon: '📍', label: 'Notre boutique physique', value: '34 Rue des Pâquis, 1201 Genève, Suisse' },
-                { icon: '📞', label: 'Par téléphone', value: '+41 79 250 35 64', sub: 'Durant les horaires d’ouverture.' },
-                { icon: '📧', label: 'Par email', value: 'info@nutrifitness.ch', sub: 'Nous répondons sous 24 à 48h.' },
+                { icon: <MapPin size={24} />, label: 'Notre boutique physique', value: '34 Rue des Pâquis, 1201 Genève, Suisse' },
+                { icon: <Phone size={24} />, label: 'Par téléphone', value: '+41 79 250 35 64', sub: 'Durant les horaires d’ouverture.' },
+                { icon: <Mail size={24} />, label: 'Par email', value: 'info@nutrifitness.ch', sub: 'Nous répondons sous 24 à 48h.' },
                 {
-                  icon: '🕐',
+                  icon: <Clock size={24} />,
                   label: 'Horaires d’ouverture',
                   value: 'Lundi – Vendredi : 10h – 18h',
                   sub: 'Samedi : 10h – 17h | Dimanche : Fermé'
                 },
               ].map((item, idx) => (
                 <div key={idx} className="flex gap-4 items-start border-b border-gray-100 pb-4 last:border-0 last:pb-0">
-                  <span className="text-2xl mt-1">{item.icon}</span>
+                  <span className="mt-1 text-[#c8102e]">{item.icon}</span>
                   <div>
                     <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">{item.label}</div>
                     <div className="text-sm font-bold text-dark">{item.value}</div>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import type { Product } from '@/lib/types'
+import { Package } from 'lucide-react'
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -87,7 +88,7 @@ export default function AdminProductsPage() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="bg-white border border-gray-border p-12 text-center">
-          <div className="text-5xl mb-4">📦</div>
+          <div className="flex justify-center mb-4 text-gray-300"><Package size={64} strokeWidth={1} /></div>
           <h3 className="font-display text-2xl text-dark mb-2">
             {search ? 'NO RESULTS FOUND' : 'NO PRODUCTS YET'}
           </h3>

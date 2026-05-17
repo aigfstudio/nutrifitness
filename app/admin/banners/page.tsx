@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import type { Banner } from '@/lib/types'
+import { Image as ImageIcon } from 'lucide-react'
 
 const EMPTY_BANNER: Omit<Banner, 'id' | 'created_at' | 'updated_at'> = {
   title: '',
@@ -208,7 +209,7 @@ export default function AdminBannersPage() {
         </div>
       ) : banners.length === 0 ? (
         <div className="bg-white border border-gray-border p-12 text-center">
-          <div className="text-5xl mb-4">🖼</div>
+          <div className="flex justify-center mb-4 text-gray-300"><ImageIcon size={64} strokeWidth={1} /></div>
           <h3 className="font-display text-2xl text-dark mb-2">NO BANNERS YET</h3>
           <p className="text-gray-400 text-sm">Create your first hero banner above.</p>
         </div>
