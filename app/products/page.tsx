@@ -41,20 +41,31 @@ export default async function ProductsPage({ searchParams }: PageProps) {
   if (searchParams.min_price) query = query.gte('price', Number(searchParams.min_price))
   if (searchParams.max_price) query = query.lte('price', Number(searchParams.max_price))
 
-  const sort = searchParams.sort ?? 'featured'
-  if (sort === 'price_asc') query = query.order('price', { ascending: true })
-  else if (sort === 'price_desc') query = query.order('price', { ascending: false })
-  else if (sort === 'newest') query = query.order('created_at', { ascending: false })
-  else if (sort === 'rating') query = query.order('rating', { ascending: false })
-  else query = query.order('is_featured', { ascending: false }).order('created_at', { ascending: false })
+  let data: any[] | null = []
+  let count: number | null = 0
+  let categories: any[] | null = []
 
-  const { data, count } = await query.range(from, to)
+  try {
+    const sort = searchParams.sort ?? 'featured'
+    if (sort === 'price_asc') query = query.order('price', { ascending: true })
+    else if (sort === 'price_desc') query = query.order('price', { ascending: false })
+    else if (sort === 'newest') query = query.order('created_at', { ascending: false })
+    else if (sort === 'rating') query = query.order('rating', { ascending: false })
+    else query = query.order('is_featured', { ascending: false }).order('created_at', { ascending: false })
 
-  const { data: categories } = await supabase
-    .from('categories')
-    .select('*')
-    .eq('is_active', true)
-    .order('sort_order')
+    const res = await query.range(from, to)
+    data = res.data
+    count = res.count
+
+    const catRes = await supabase
+      .from('categories')
+      .select('*')
+      .eq('is_active', true)
+      .order('sort_order')
+    categories = catRes.data
+  } catch (err) {
+    console.error('SERVER FETCH ERROR IN app/products/page.tsx:', err)
+  }
 
   const products = (data ?? []) as Product[]
   const cats = (categories ?? []) as Category[]

@@ -14,24 +14,35 @@ export const metadata: Metadata = {
 export const revalidate = 60
 
 async function getData() {
-  const supabase = createServerSupabaseClient()
-  const [bannersResult, categoriesResult, featuredResult, newResult] = await Promise.all([
-    supabase.from('banners').select('*').eq('is_active', true).order('sort_order'),
-    supabase.from('categories').select('*').eq('is_active', true).order('sort_order').limit(12),
-    supabase.from('products').select('*').eq('is_featured', true).eq('in_stock', true).order('created_at', { ascending: false }).limit(8),
-    supabase.from('products').select('*').eq('is_new', true).eq('in_stock', true).order('created_at', { ascending: false }).limit(4),
-  ])
-  let featured = (featuredResult.data ?? []) as Product[]
-  if (featured.length === 0) {
-    const fallback = await supabase.from('products').select('*').eq('in_stock', true).order('created_at', { ascending: false }).limit(8)
-    featured = (fallback.data ?? []) as Product[]
-  }
+  try {
+    const supabase = createServerSupabaseClient()
+    const [bannersResult, categoriesResult, featuredResult, newResult] = await Promise.all([
+      supabase.from('banners').select('*').eq('is_active', true).order('sort_order'),
+      supabase.from('categories').select('*').eq('is_active', true).order('sort_order').limit(12),
+      supabase.from('products').select('*').eq('is_featured', true).eq('in_stock', true).order('created_at', { ascending: false }).limit(8),
+      supabase.from('products').select('*').eq('is_new', true).eq('in_stock', true).order('created_at', { ascending: false }).limit(4),
+    ])
+    
+    let featured = (featuredResult.data ?? []) as Product[]
+    if (featured.length === 0) {
+      const fallback = await supabase.from('products').select('*').eq('in_stock', true).order('created_at', { ascending: false }).limit(8)
+      featured = (fallback.data ?? []) as Product[]
+    }
 
-  return {
-    banners: (bannersResult.data ?? []) as Banner[],
-    categories: (categoriesResult.data ?? []) as Category[],
-    featured,
-    newProducts: (newResult.data ?? []) as Product[],
+    return {
+      banners: (bannersResult.data ?? []) as Banner[],
+      categories: (categoriesResult.data ?? []) as Category[],
+      featured,
+      newProducts: (newResult.data ?? []) as Product[],
+    }
+  } catch (error) {
+    console.error('SERVER FETCH ERROR IN app/page.tsx:', error)
+    return {
+      banners: [],
+      categories: [],
+      featured: [],
+      newProducts: []
+    }
   }
 }
 
