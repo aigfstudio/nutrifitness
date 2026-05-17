@@ -44,9 +44,9 @@ export default async function ProductsPage({ searchParams }: PageProps) {
   let data: any[] | null = []
   let count: number | null = 0
   let categories: any[] | null = []
+  const sort = searchParams.sort ?? 'featured'
 
   try {
-    const sort = searchParams.sort ?? 'featured'
     if (sort === 'price_asc') query = query.order('price', { ascending: true })
     else if (sort === 'price_desc') query = query.order('price', { ascending: false })
     else if (sort === 'newest') query = query.order('created_at', { ascending: false })
