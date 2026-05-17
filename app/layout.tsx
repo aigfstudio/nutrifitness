@@ -4,6 +4,7 @@ import './globals.css'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { CartDrawer } from '@/components/CartDrawer'
+import AIChat from '@/components/AIChat'
 import { Toaster } from 'react-hot-toast'
 
 const bebasNeue = Bebas_Neue({
@@ -51,6 +52,7 @@ export default function RootLayout({
         <CartDrawer />
         <main className="min-h-screen">{children}</main>
         <Footer />
+        <AIChat />
         <Toaster
           position="bottom-right"
           toastOptions={{
