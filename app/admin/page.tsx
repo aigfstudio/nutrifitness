@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
+import { PackagePlus, Image as ImageIcon, Tag, Package, ShoppingCart, Users, DollarSign, Folder, Megaphone } from 'lucide-react'
 
 interface Stats {
   products: number
@@ -54,10 +55,10 @@ export default function AdminDashboard() {
   }, [])
 
   const quickActions = [
-    { label: 'Add New Product', href: '/admin/products/new', icon: '➕', color: 'bg-primary' },
-    { label: 'Edit Banners', href: '/admin/banners', icon: '🖼', color: 'bg-dark' },
-    { label: 'Manage Offers', href: '/admin/offers', icon: '🏷', color: 'bg-dark-3' },
-    { label: 'View Orders', href: '/admin/orders', icon: '📦', color: 'bg-dark-2' },
+    { label: 'Add New Product', href: '/admin/products/new', icon: <PackagePlus size={24} />, color: 'bg-primary' },
+    { label: 'Edit Banners', href: '/admin/banners', icon: <ImageIcon size={24} />, color: 'bg-dark' },
+    { label: 'Manage Offers', href: '/admin/offers', icon: <Tag size={24} />, color: 'bg-dark-3' },
+    { label: 'View Orders', href: '/admin/orders', icon: <Package size={24} />, color: 'bg-dark-2' },
   ]
 
   if (loading) {
@@ -73,13 +74,13 @@ export default function AdminDashboard() {
       {/* Stats grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total Products', value: stats.products, icon: '📦', color: 'border-blue-500' },
-          { label: 'Total Orders', value: stats.orders, icon: '🛒', color: 'border-primary' },
-          { label: 'Customers', value: stats.customers, icon: '👥', color: 'border-green-500' },
-          { label: 'Revenue (CHF)', value: `${stats.revenue.toFixed(0)}`, icon: '💰', color: 'border-yellow-500' },
+          { label: 'Total Products', value: stats.products, icon: <Package size={32} />, color: 'border-blue-500' },
+          { label: 'Total Orders', value: stats.orders, icon: <ShoppingCart size={32} />, color: 'border-primary' },
+          { label: 'Customers', value: stats.customers, icon: <Users size={32} />, color: 'border-green-500' },
+          { label: 'Revenue (CHF)', value: `${stats.revenue.toFixed(0)}`, icon: <DollarSign size={32} />, color: 'border-yellow-500' },
         ].map((stat) => (
           <div key={stat.label} className={`bg-white border-t-4 ${stat.color} p-5 shadow-sm`}>
-            <div className="text-3xl mb-2">{stat.icon}</div>
+            <div className="text-gray-400 mb-3">{stat.icon}</div>
             <div className="font-display text-3xl text-dark">{stat.value}</div>
             <div className="text-xs font-bold tracking-wider text-gray-400 uppercase mt-1">{stat.label}</div>
           </div>
@@ -156,19 +157,19 @@ export default function AdminDashboard() {
         <h2 className="font-display text-xl text-white mb-4 tracking-wide">MANAGE YOUR STORE</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[
-            { label: 'Hero Banners', sub: 'Update homepage slider images & text', href: '/admin/banners', icon: '🖼' },
-            { label: 'Products', sub: 'Add, edit, delete products and galleries', href: '/admin/products', icon: '📦' },
-            { label: 'Categories', sub: 'Manage product categories and colors', href: '/admin/categories', icon: '📂' },
-            { label: 'Offers & Deals', sub: 'Create BOGO, % off and fixed discounts', href: '/admin/offers', icon: '🏷' },
-            { label: 'Orders', sub: 'View and update all customer orders', href: '/admin/orders', icon: '🛒' },
-            { label: 'Promo Bar', sub: 'Edit the rotating top banner messages', href: '/admin/promo', icon: '📢' },
+            { label: 'Hero Banners', sub: 'Update homepage slider images & text', href: '/admin/banners', icon: <ImageIcon size={24} /> },
+            { label: 'Products', sub: 'Add, edit, delete products and galleries', href: '/admin/products', icon: <Package size={24} /> },
+            { label: 'Categories', sub: 'Manage product categories and colors', href: '/admin/categories', icon: <Folder size={24} /> },
+            { label: 'Offers & Deals', sub: 'Create BOGO, % off and fixed discounts', href: '/admin/offers', icon: <Tag size={24} /> },
+            { label: 'Orders', sub: 'View and update all customer orders', href: '/admin/orders', icon: <ShoppingCart size={24} /> },
+            { label: 'Promo Bar', sub: 'Edit the rotating top banner messages', href: '/admin/promo', icon: <Megaphone size={24} /> },
           ].map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className="bg-dark-2 border border-dark-3 p-4 hover:border-primary/50 transition-colors group"
             >
-              <div className="text-2xl mb-2">{item.icon}</div>
+              <div className="text-gray-300 mb-3">{item.icon}</div>
               <div className="font-bold text-white text-sm group-hover:text-primary transition-colors">{item.label}</div>
               <div className="text-xs text-gray-500 mt-1">{item.sub}</div>
             </Link>
