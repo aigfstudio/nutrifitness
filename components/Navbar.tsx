@@ -167,9 +167,7 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-xs font-black tracking-widest whitespace-nowrap hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary pb-1 ${
-                  link.red ? 'text-primary' : 'text-dark'
-                }`}
+                className="text-xs font-black tracking-widest whitespace-nowrap hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary pb-1 text-dark"
               >
                 {link.label}
               </Link>
@@ -204,9 +202,7 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`block py-2.5 text-xs font-black tracking-widest border-b border-gray-100 last:border-0 uppercase ${
-                    link.red ? 'text-primary' : 'text-dark'
-                  }`}
+                  className="block py-2.5 text-xs font-black tracking-widest border-b border-gray-100 last:border-0 uppercase text-dark"
                 >
                   {link.label}
                 </Link>
