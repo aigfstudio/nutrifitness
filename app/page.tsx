@@ -17,15 +17,15 @@ async function getData() {
   try {
     const supabase = createServerSupabaseClient()
     const [bannersResult, categoriesResult, featuredResult, newResult] = await Promise.all([
-      supabase.from('banners').select('*').eq('is_active', true).order('sort_order'),
-      supabase.from('categories').select('*').eq('is_active', true).order('sort_order').limit(12),
-      supabase.from('products').select('*').eq('is_featured', true).eq('in_stock', true).order('created_at', { ascending: false }).limit(8),
-      supabase.from('products').select('*').eq('is_new', true).eq('in_stock', true).order('created_at', { ascending: false }).limit(4),
+      supabase.from('banners').select('*').limit(5),
+      supabase.from('categories').select('*').limit(12),
+      supabase.from('products').select('*').limit(8),
+      supabase.from('products').select('*').limit(4),
     ])
     
     let featured = (featuredResult.data ?? []) as Product[]
     if (featured.length === 0) {
-      const fallback = await supabase.from('products').select('*').eq('in_stock', true).order('created_at', { ascending: false }).limit(8)
+      const fallback = await supabase.from('products').select('*').limit(8)
       featured = (fallback.data ?? []) as Product[]
     }
 

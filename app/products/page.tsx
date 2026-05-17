@@ -47,11 +47,12 @@ export default async function ProductsPage({ searchParams }: PageProps) {
   const sort = searchParams.sort ?? 'featured'
 
   try {
-    if (sort === 'price_asc') query = query.order('price', { ascending: true })
-    else if (sort === 'price_desc') query = query.order('price', { ascending: false })
-    else if (sort === 'newest') query = query.order('created_at', { ascending: false })
-    else if (sort === 'rating') query = query.order('rating', { ascending: false })
-    else query = query.order('is_featured', { ascending: false }).order('created_at', { ascending: false })
+    // Disabled ordering to prevent schema mismatch crashes
+    // if (sort === 'price_asc') query = query.order('price', { ascending: true })
+    // else if (sort === 'price_desc') query = query.order('price', { ascending: false })
+    // else if (sort === 'newest') query = query.order('created_at', { ascending: false })
+    // else if (sort === 'rating') query = query.order('rating', { ascending: false })
+    // else query = query.order('is_featured', { ascending: false }).order('created_at', { ascending: false })
 
     const res = await query.range(from, to)
     data = res.data
@@ -60,8 +61,7 @@ export default async function ProductsPage({ searchParams }: PageProps) {
     const catRes = await supabase
       .from('categories')
       .select('*')
-      .eq('is_active', true)
-      .order('sort_order')
+      .limit(20)
     categories = catRes.data
   } catch (err) {
     console.error('SERVER FETCH ERROR IN app/products/page.tsx:', err)
