@@ -98,43 +98,13 @@ export default async function ProductDetailPage({ params }: PageProps) {
         <span className="text-dark font-semibold">{product.name}</span>
       </div>
 
-      {/* Main product layout — gallery + info all inside ProductDetailClient */}
-      <ProductDetailClient product={product} discount={discount} images={images} />
-
-      {/* Long Description */}
-      {product.description_long && (
-        <div className="max-w-[1200px] mx-auto px-4 mb-16">
-          <div className="border border-gray-200">
-            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-              <h2 className="font-display text-2xl text-dark tracking-wide">PRODUCT DETAILS</h2>
-            </div>
-            <div
-              id="reviews"
-              className="px-6 py-6 prose prose-sm max-w-none text-gray-700"
-              dangerouslySetInnerHTML={{
-                __html: product.description_long.replace(/\\n/g, '<br/>'),
-              }}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Related Products */}
-      {relatedProducts.length > 0 && (
-        <div className="max-w-[1400px] mx-auto px-4 mb-16">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display text-3xl text-dark tracking-wide">YOU MAY ALSO LIKE</h2>
-            <Link href={`/products?category=${encodeURIComponent(product.category ?? '')}`} className="text-[#c8102e] text-sm font-bold hover:underline">
-              View All →
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {relatedProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Main product layout — gallery + info + details all inside ProductDetailClient */}
+      <ProductDetailClient 
+        product={product} 
+        discount={discount} 
+        images={images} 
+        relatedProducts={relatedProducts} 
+      />
     </div>
   )
 }

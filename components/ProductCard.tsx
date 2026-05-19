@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCartStore } from '@/lib/cart'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
@@ -36,8 +36,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   const [liked, setLiked] = useState(false)
   const [addingToCart, setAddingToCart] = useState(false)
   const { addItem } = useCartStore()
+  const [isMounted, setIsMounted] = useState(false)
   const { language } = useLanguageStore()
   const t = translations[language]
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const discount = product.price_original
     ? Math.round((1 - product.price / product.price_original) * 100)
@@ -113,12 +118,12 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           )}
           {discount && !product.badge_text && (
             <span className="bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
-              -{discount}% {t.product.sale}
+              -{discount}% {isMounted ? t.product.sale : 'Sale'}
             </span>
           )}
           {product.is_new && (
             <span className="bg-dark text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
-              {t.product.new}
+              {isMounted ? t.product.new : 'New'}
             </span>
           )}
         </div>
@@ -137,7 +142,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         {!product.in_stock && (
           <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center z-10">
             <span className="bg-dark text-white text-xs font-bold px-4 py-2 rounded-sm tracking-widest shadow-lg uppercase">
-              {t.product.outOfStock}
+              {isMounted ? t.product.outOfStock : 'Out of Stock'}
             </span>
           </div>
         )}

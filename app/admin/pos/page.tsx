@@ -99,6 +99,8 @@ export default function POSPage() {
   const handleCheckout = async () => {
     if (cart.length === 0) return
 
+    const { data: { user } } = await supabase.auth.getUser()
+
     const orderData = {
       order_number: 'POS-' + Math.floor(Math.random() * 900000 + 100000),
       items: cart.map(c => ({
@@ -113,7 +115,7 @@ export default function POSPage() {
       total,
       status: 'delivered', // POS orders are instantly delivered
       notes: `POS Sale | Payment: ${paymentMethod}`,
-      user_id: null,
+      user_id: user?.id ?? null,
     }
 
     // Process order in db

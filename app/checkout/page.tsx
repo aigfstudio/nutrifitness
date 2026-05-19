@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -8,6 +8,8 @@ import { useCartStore } from '@/lib/cart'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { ShoppingCart, PartyPopper } from 'lucide-react'
+import { useLanguageStore } from '@/store/useLanguageStore'
+import { translations } from '@/lib/i18n/translations'
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -24,6 +26,13 @@ export default function CheckoutPage() {
     notes: '',
   })
   const [placing, setPlacing] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+  const { language } = useLanguageStore()
+  const t = translations[language]
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm(prev => ({ ...prev, [k]: e.target.value }))
@@ -32,9 +41,9 @@ export default function CheckoutPage() {
     return (
       <div className="max-w-xl mx-auto px-4 py-24 text-center page-transition">
         <div className="flex justify-center mb-4 text-gray-300"><ShoppingCart size={64} strokeWidth={1} /></div>
-        <h1 className="font-display text-3xl text-dark mb-3">YOUR CART IS EMPTY</h1>
+        <h1 className="font-display text-3xl text-dark mb-3">{isMounted ? t.checkout.emptyCart : 'YOUR CART IS EMPTY'}</h1>
         <Link href="/products" className="bg-primary text-white px-8 py-3 text-sm font-bold hover:bg-primary-dark transition-colors inline-block">
-          SHOP NOW
+          {isMounted ? t.checkout.shopNow : 'SHOP NOW'}
         </Link>
       </div>
     )
@@ -83,7 +92,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-[1100px] mx-auto px-4 py-8 page-transition">
-      <h1 className="font-display text-4xl text-dark tracking-wide mb-8">CHECKOUT</h1>
+      <h1 className="font-display text-4xl text-dark tracking-wide mb-8">{isMounted ? t.checkout.title.toUpperCase() : 'CHECKOUT'}</h1>
 
       <form onSubmit={handlePlaceOrder}>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
@@ -91,12 +100,12 @@ export default function CheckoutPage() {
           <div className="lg:col-span-3 space-y-6">
             {/* Contact */}
             <div className="bg-white border border-gray-border p-6">
-              <h2 className="font-display text-xl text-dark mb-4 tracking-wide">CONTACT INFORMATION</h2>
+              <h2 className="font-display text-xl text-dark mb-4 tracking-wide">{isMounted ? t.checkout.contactInfo : 'CONTACT INFORMATION'}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { key: 'full_name', label: 'Full Name *', type: 'text', placeholder: 'John Doe', col: 2 },
-                  { key: 'email', label: 'Email *', type: 'email', placeholder: 'you@example.com' },
-                  { key: 'phone', label: 'Phone', type: 'tel', placeholder: '+41 79 123 45 67' },
+                  { key: 'full_name', label: isMounted ? t.checkout.fullName : 'Full Name *', type: 'text', placeholder: 'John Doe', col: 2 },
+                  { key: 'email', label: isMounted ? t.checkout.email + ' *' : 'Email *', type: 'email', placeholder: 'you@example.com' },
+                  { key: 'phone', label: isMounted ? t.checkout.phone : 'Phone', type: 'tel', placeholder: '+41 79 123 45 67' },
                 ].map(({ key, label, type, placeholder, col }) => (
                   <div key={key} className={col === 2 ? 'sm:col-span-2' : ''}>
                     <label className="block text-xs font-bold tracking-wider text-gray-400 uppercase mb-1.5">{label}</label>
@@ -108,13 +117,13 @@ export default function CheckoutPage() {
 
             {/* Shipping */}
             <div className="bg-white border border-gray-border p-6">
-              <h2 className="font-display text-xl text-dark mb-4 tracking-wide">SHIPPING ADDRESS</h2>
+              <h2 className="font-display text-xl text-dark mb-4 tracking-wide">{isMounted ? t.checkout.shipping.toUpperCase() : 'SHIPPING ADDRESS'}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { key: 'address_line1', label: 'Address Line 1 *', placeholder: 'Musterstrasse 1', col: 2 },
-                  { key: 'address_line2', label: 'Address Line 2', placeholder: 'Apt 42', col: 2 },
-                  { key: 'city', label: 'City *', placeholder: 'Zürich' },
-                  { key: 'postal_code', label: 'Postal Code *', placeholder: '8001' },
+                  { key: 'address_line1', label: isMounted ? t.checkout.addressLine1 : 'Address Line 1 *', placeholder: 'Musterstrasse 1', col: 2 },
+                  { key: 'address_line2', label: isMounted ? t.checkout.addressLine2 : 'Address Line 2', placeholder: 'Apt 42', col: 2 },
+                  { key: 'city', label: isMounted ? t.checkout.city + ' *' : 'City *', placeholder: 'Zürich' },
+                  { key: 'postal_code', label: isMounted ? t.checkout.postalCode + ' *' : 'Postal Code *', placeholder: '8001' },
                 ].map(({ key, label, placeholder, col }) => (
                   <div key={key} className={col === 2 ? 'sm:col-span-2' : ''}>
                     <label className="block text-xs font-bold tracking-wider text-gray-400 uppercase mb-1.5">{label}</label>
@@ -122,7 +131,7 @@ export default function CheckoutPage() {
                   </div>
                 ))}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold tracking-wider text-gray-400 uppercase mb-1.5">Country</label>
+                  <label className="block text-xs font-bold tracking-wider text-gray-400 uppercase mb-1.5">{isMounted ? t.checkout.country : 'Country'}</label>
                   <select value={form.country} onChange={set('country')} className="w-full border border-gray-border px-4 py-3 text-sm focus:outline-none focus:border-primary bg-white">
                     <option>Switzerland</option>
                     <option>Germany</option>
@@ -132,8 +141,8 @@ export default function CheckoutPage() {
                   </select>
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold tracking-wider text-gray-400 uppercase mb-1.5">Order Notes (optional)</label>
-                  <textarea value={form.notes} onChange={set('notes')} rows={2} placeholder="Any special instructions..." className="w-full border border-gray-border px-4 py-3 text-sm focus:outline-none focus:border-primary resize-none" />
+                  <label className="block text-xs font-bold tracking-wider text-gray-400 uppercase mb-1.5">{isMounted ? t.checkout.orderNotes : 'Order Notes (optional)'}</label>
+                  <textarea value={form.notes} onChange={set('notes')} rows={2} placeholder="..." className="w-full border border-gray-border px-4 py-3 text-sm focus:outline-none focus:border-primary resize-none" />
                 </div>
               </div>
             </div>
@@ -143,18 +152,18 @@ export default function CheckoutPage() {
               disabled={placing}
               className="w-full bg-primary text-white py-4 font-bold tracking-wider text-sm hover:bg-primary-dark transition-colors disabled:opacity-50"
             >
-              {placing ? 'PLACING ORDER...' : `PLACE ORDER — CHF ${orderTotal.toFixed(2)}`}
+              {placing ? (isMounted ? t.checkout.placingOrder : 'PLACING ORDER...') : `${isMounted ? t.checkout.placeOrderPrice : 'PLACE ORDER — CHF'} ${orderTotal.toFixed(2)}`}
             </button>
             <p className="text-xs text-gray-400 text-center">
-              By placing your order you agree to our{' '}
-              <Link href="/shipping" className="text-primary hover:underline">Terms & Conditions</Link>.
+              {isMounted ? t.checkout.agreeTerms : 'By placing your order you agree to our'}{' '}
+              <Link href="/shipping" className="text-primary hover:underline">{isMounted ? t.checkout.terms : 'Terms & Conditions'}</Link>.
             </p>
           </div>
 
           {/* Order summary */}
           <div className="lg:col-span-2">
             <div className="bg-white border border-gray-border p-5 sticky top-24">
-              <h2 className="font-display text-xl text-dark mb-4 tracking-wide">ORDER SUMMARY</h2>
+              <h2 className="font-display text-xl text-dark mb-4 tracking-wide">{isMounted ? t.checkout.summary.toUpperCase() : 'ORDER SUMMARY'}</h2>
               <div className="space-y-3 mb-5">
                 {items.map(item => (
                   <div key={`${item.product_id}-${item.flavor}`} className="flex gap-3">
@@ -182,8 +191,8 @@ export default function CheckoutPage() {
                 ))}
               </div>
               <div className="border-t border-gray-border pt-4 space-y-2">
-                <div className="flex justify-between text-sm"><span className="text-gray-400">Subtotal</span><span className="font-semibold">CHF {total.toFixed(2)}</span></div>
-                <div className="flex justify-between text-sm"><span className="text-gray-400">Shipping</span><span className={`font-semibold flex items-center gap-1 ${freeShipping ? 'text-green-600' : ''}`}>{freeShipping ? <><PartyPopper size={16} /> Free</> : `CHF ${shipping.toFixed(2)}`}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-gray-400">{isMounted ? t.cart.subtotal : 'Subtotal'}</span><span className="font-semibold">CHF {total.toFixed(2)}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-gray-400">{isMounted ? t.cart.shippingLabel : 'Shipping'}</span><span className={`font-semibold flex items-center gap-1 ${freeShipping ? 'text-green-600' : ''}`}>{freeShipping ? <><PartyPopper size={16} /> {isMounted ? t.checkout.free : 'Free'}</> : `CHF ${shipping.toFixed(2)}`}</span></div>
                 <div className="flex justify-between text-base font-bold border-t border-gray-border pt-2"><span>Total</span><span>CHF {orderTotal.toFixed(2)}</span></div>
               </div>
             </div>

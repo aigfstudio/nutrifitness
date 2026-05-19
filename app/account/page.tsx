@@ -8,6 +8,8 @@ import toast from 'react-hot-toast'
 import type { Profile, Order } from '@/lib/types'
 import type { User } from '@supabase/supabase-js'
 import { LayoutDashboard, Package, User as UserIcon, Heart, CheckCircle, Clock, LogOut } from 'lucide-react'
+import { useLanguageStore } from '@/store/useLanguageStore'
+import { translations } from '@/lib/i18n/translations'
 
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -35,8 +37,12 @@ export default function AccountPage() {
   const [editMode, setEditMode] = useState(false)
   const [formData, setFormData] = useState({ full_name: '', phone: '' })
   const [saving, setSaving] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+  const { language } = useLanguageStore()
+  const t = translations[language]
 
   useEffect(() => {
+    setIsMounted(true)
     const init = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/auth/login'); return }
@@ -88,9 +94,16 @@ export default function AccountPage() {
     )
   }
 
+  const NAV_ITEMS = [
+    { id: 'dashboard', label: isMounted ? t.account.dashboard : 'Dashboard', icon: <LayoutDashboard size={18} /> },
+    { id: 'orders', label: isMounted ? t.account.myOrders : 'My Orders', icon: <Package size={18} /> },
+    { id: 'profile', label: isMounted ? t.account.profile : 'Profile', icon: <UserIcon size={18} /> },
+    { id: 'wishlist', label: isMounted ? t.account.wishlist : 'Wishlist', icon: <Heart size={18} /> },
+  ]
+
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-8 page-transition">
-      <h1 className="font-display text-4xl text-dark tracking-wide mb-8">MY ACCOUNT</h1>
+      <h1 className="font-display text-4xl text-dark tracking-wide mb-8">{isMounted ? t.account.myAccount : 'MY ACCOUNT'}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar */}
@@ -106,7 +119,7 @@ export default function AccountPage() {
                 href="/admin"
                 className="mt-2 inline-block bg-primary text-white text-xs font-bold px-4 py-1.5 hover:bg-primary-dark transition-colors"
               >
-                ADMIN PANEL
+                {isMounted ? t.account.adminPanel : 'ADMIN PANEL'}
               </Link>
             )}
           </div>
@@ -129,7 +142,7 @@ export default function AccountPage() {
               onClick={handleSignOut}
               className="w-full flex items-center gap-2 text-left px-4 py-3 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors border-t border-gray-border"
             >
-              <LogOut size={18} /> Sign Out
+              <LogOut size={18} /> {isMounted ? t.account.signOut : 'Sign Out'}
             </button>
           </nav>
         </aside>
@@ -139,12 +152,12 @@ export default function AccountPage() {
           {/* Dashboard */}
           {activeTab === 'dashboard' && (
             <div>
-              <h2 className="font-display text-2xl text-dark mb-4">DASHBOARD</h2>
+              <h2 className="font-display text-2xl text-dark mb-4">{isMounted ? t.account.dashboard : 'DASHBOARD'}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                 {[
-                  { label: 'Total Orders', value: orders.length, icon: <Package size={32} /> },
-                  { label: 'Completed', value: orders.filter(o => o.status === 'delivered').length, icon: <CheckCircle size={32} /> },
-                  { label: 'Pending', value: orders.filter(o => o.status === 'pending').length, icon: <Clock size={32} /> },
+                  { label: isMounted ? t.account.totalOrders : 'Total Orders', value: orders.length, icon: <Package size={32} /> },
+                  { label: isMounted ? t.account.completed : 'Completed', value: orders.filter(o => o.status === 'delivered').length, icon: <CheckCircle size={32} /> },
+                  { label: isMounted ? t.account.pending : 'Pending', value: orders.filter(o => o.status === 'pending').length, icon: <Clock size={32} /> },
                 ].map(stat => (
                   <div key={stat.label} className="bg-white border border-gray-border p-5">
                     <div className="text-gray-400 mb-3">{stat.icon}</div>
@@ -157,9 +170,9 @@ export default function AccountPage() {
               {orders.length > 0 && (
                 <div className="bg-white border border-gray-border">
                   <div className="px-5 py-4 border-b border-gray-border flex items-center justify-between">
-                    <h3 className="font-bold text-dark">Recent Orders</h3>
+                    <h3 className="font-bold text-dark">{isMounted ? t.account.recentOrders : 'Recent Orders'}</h3>
                     <button onClick={() => setActiveTab('orders')} className="text-xs text-primary font-bold hover:underline">
-                      View All →
+                      {isMounted ? t.account.viewAll : 'View All →'}
                     </button>
                   </div>
                   <div className="divide-y divide-gray-border">
@@ -188,14 +201,14 @@ export default function AccountPage() {
           {/* Orders */}
           {activeTab === 'orders' && (
             <div>
-              <h2 className="font-display text-2xl text-dark mb-4">MY ORDERS</h2>
+              <h2 className="font-display text-2xl text-dark mb-4">{isMounted ? t.account.myOrders : 'MY ORDERS'}</h2>
               {orders.length === 0 ? (
                 <div className="bg-white border border-gray-border p-12 text-center">
                   <div className="flex justify-center mb-4 text-gray-300"><Package size={64} strokeWidth={1} /></div>
-                  <h3 className="font-display text-2xl text-dark mb-2">NO ORDERS YET</h3>
-                  <p className="text-gray-400 text-sm mb-6">Time to get shopping!</p>
+                  <h3 className="font-display text-2xl text-dark mb-2">{isMounted ? t.account.noOrders : 'NO ORDERS YET'}</h3>
+                  <p className="text-gray-400 text-sm mb-6">{isMounted ? t.account.timeToShop : 'Time to get shopping!'}</p>
                   <Link href="/products" className="bg-primary text-white px-8 py-3 text-sm font-bold tracking-wider hover:bg-primary-dark transition-colors inline-block">
-                    SHOP NOW
+                    {isMounted ? t.account.shopNow : 'SHOP NOW'}
                   </Link>
                 </div>
               ) : (
@@ -206,7 +219,7 @@ export default function AccountPage() {
                         <div>
                           <div className="font-bold text-dark">{order.order_number}</div>
                           <div className="text-xs text-gray-400">
-                            Placed on {new Date(order.created_at).toLocaleDateString('en-CH')}
+                            {isMounted ? t.account.placedOn : 'Placed on'} {new Date(order.created_at).toLocaleDateString('en-CH')}
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
@@ -217,7 +230,7 @@ export default function AccountPage() {
                         </div>
                       </div>
                       <div className="border-t border-gray-border pt-3">
-                        <div className="text-xs font-bold text-gray-400 uppercase mb-2">Items</div>
+                        <div className="text-xs font-bold text-gray-400 uppercase mb-2">{isMounted ? t.account.items : 'Items'}</div>
                         <div className="space-y-1">
                           {(order.items as any[]).map((item: any, i: number) => (
                             <div key={i} className="flex justify-between text-sm">
@@ -238,20 +251,20 @@ export default function AccountPage() {
           {activeTab === 'profile' && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-display text-2xl text-dark">MY PROFILE</h2>
+                <h2 className="font-display text-2xl text-dark">{isMounted ? t.account.profile : 'MY PROFILE'}</h2>
                 {!editMode && (
                   <button
                     onClick={() => setEditMode(true)}
                     className="bg-dark text-white px-5 py-2 text-sm font-bold hover:bg-dark-2 transition-colors"
                   >
-                    EDIT PROFILE
+                    {isMounted ? t.account.editProfile : 'EDIT PROFILE'}
                   </button>
                 )}
               </div>
               <div className="bg-white border border-gray-border p-6 space-y-4">
                 {[
-                  { label: 'Full Name', key: 'full_name', value: profile?.full_name ?? '' },
-                  { label: 'Phone', key: 'phone', value: profile?.phone ?? '' },
+                  { label: isMounted ? t.account.fullName : 'Full Name', key: 'full_name', value: profile?.full_name ?? '' },
+                  { label: isMounted ? t.account.phone : 'Phone', key: 'phone', value: profile?.phone ?? '' },
                 ].map(field => (
                   <div key={field.key}>
                     <label className="block text-xs font-bold tracking-wider text-gray-400 uppercase mb-1.5">
@@ -266,7 +279,7 @@ export default function AccountPage() {
                       />
                     ) : (
                       <div className="text-sm text-dark font-semibold border border-gray-border px-4 py-3 bg-gray-light">
-                        {field.value || <span className="text-gray-400 font-normal">Not set</span>}
+                        {field.value || <span className="text-gray-400 font-normal">{isMounted ? t.account.notSet : 'Not set'}</span>}
                       </div>
                     )}
                   </div>
@@ -274,12 +287,12 @@ export default function AccountPage() {
 
                 <div>
                   <label className="block text-xs font-bold tracking-wider text-gray-400 uppercase mb-1.5">
-                    Email Address
+                    {isMounted ? t.account.email : 'Email Address'}
                   </label>
                   <div className="text-sm text-dark font-semibold border border-gray-border px-4 py-3 bg-gray-light">
                     {user?.email}
                   </div>
-                  <p className="text-xs text-gray-400 mt-1">Email cannot be changed here.</p>
+                  <p className="text-xs text-gray-400 mt-1">{isMounted ? t.account.emailCantChange : 'Email cannot be changed here.'}</p>
                 </div>
 
                 {editMode && (
@@ -289,13 +302,13 @@ export default function AccountPage() {
                       disabled={saving}
                       className="bg-primary text-white px-6 py-2.5 text-sm font-bold hover:bg-primary-dark transition-colors disabled:opacity-50"
                     >
-                      {saving ? 'SAVING...' : 'SAVE CHANGES'}
+                      {saving ? (isMounted ? t.account.saving : 'SAVING...') : (isMounted ? t.account.saveChanges : 'SAVE CHANGES')}
                     </button>
                     <button
                       onClick={() => setEditMode(false)}
                       className="bg-white text-dark border border-dark px-6 py-2.5 text-sm font-bold hover:bg-gray-light transition-colors"
                     >
-                      CANCEL
+                      {isMounted ? t.account.cancel : 'CANCEL'}
                     </button>
                   </div>
                 )}
@@ -306,13 +319,13 @@ export default function AccountPage() {
           {/* Wishlist */}
           {activeTab === 'wishlist' && (
             <div>
-              <h2 className="font-display text-2xl text-dark mb-4">MY WISHLIST</h2>
+              <h2 className="font-display text-2xl text-dark mb-4">{isMounted ? t.account.wishlist : 'MY WISHLIST'}</h2>
               <div className="bg-white border border-gray-border p-12 text-center">
                 <div className="flex justify-center mb-4 text-gray-300"><Heart size={64} strokeWidth={1} /></div>
-                <h3 className="font-display text-2xl text-dark mb-2">YOUR WISHLIST IS EMPTY</h3>
-                <p className="text-gray-400 text-sm mb-6">Save items you love for later!</p>
+                <h3 className="font-display text-2xl text-dark mb-2">{isMounted ? t.account.emptyWishlist : 'YOUR WISHLIST IS EMPTY'}</h3>
+                <p className="text-gray-400 text-sm mb-6">{isMounted ? t.account.saveItemsLater : 'Save items you love for later!'}</p>
                 <Link href="/products" className="bg-primary text-white px-8 py-3 text-sm font-bold tracking-wider hover:bg-primary-dark transition-colors inline-block">
-                  BROWSE PRODUCTS
+                  {isMounted ? t.account.browseProducts : 'BROWSE PRODUCTS'}
                 </Link>
               </div>
             </div>

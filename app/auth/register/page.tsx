@@ -1,15 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import { useLanguageStore } from '@/store/useLanguageStore'
+import { translations } from '@/lib/i18n/translations'
 
 export default function RegisterPage() {
   const router = useRouter()
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' })
   const [loading, setLoading] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+  const { language } = useLanguageStore()
+  const t = translations[language]
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,14 +61,14 @@ export default function RegisterPage() {
         </div>
 
         <div className="bg-white border border-gray-border p-8 shadow-sm">
-          <h1 className="font-display text-3xl text-dark mb-6 tracking-wide">CREATE ACCOUNT</h1>
+          <h1 className="font-display text-3xl text-dark mb-6 tracking-wide">{isMounted ? t.auth.createAccount : 'CREATE ACCOUNT'}</h1>
 
           <form onSubmit={handleRegister} className="space-y-4">
             {[
-              { key: 'name', label: 'Full Name', type: 'text', placeholder: 'John Doe' },
-              { key: 'email', label: 'Email Address', type: 'email', placeholder: 'you@example.com' },
-              { key: 'password', label: 'Password', type: 'password', placeholder: '••••••••' },
-              { key: 'confirm', label: 'Confirm Password', type: 'password', placeholder: '••••••••' },
+              { key: 'name', label: isMounted ? t.auth.createAccount.split(' ')[1] === 'UN' ? 'Nom Complet' : 'Full Name' : 'Full Name', type: 'text', placeholder: 'John Doe' },
+              { key: 'email', label: isMounted ? t.auth.email : 'Email Address', type: 'email', placeholder: 'you@example.com' },
+              { key: 'password', label: isMounted ? t.auth.password : 'Password', type: 'password', placeholder: '••••••••' },
+              { key: 'confirm', label: isMounted ? t.auth.confirmPass : 'Confirm Password', type: 'password', placeholder: '••••••••' },
             ].map(({ key, label, type, placeholder }) => (
               <div key={key}>
                 <label className="block text-xs font-bold tracking-wider text-dark uppercase mb-1.5">
@@ -81,24 +90,24 @@ export default function RegisterPage() {
               disabled={loading}
               className="w-full bg-dark text-white py-3.5 text-sm font-bold tracking-wider hover:bg-dark-2 transition-colors disabled:opacity-50"
             >
-              {loading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
+              {loading ? (isMounted ? t.auth.creating : 'CREATING ACCOUNT...') : (isMounted ? t.auth.createAccount : 'CREATE ACCOUNT')}
             </button>
           </form>
 
           <div className="mt-6 pt-6 border-t border-gray-border text-center">
             <p className="text-sm text-gray-500">
-              Already have an account?{' '}
+              {isMounted ? t.auth.hasAccount : 'Already have an account?'}{' '}
               <Link href="/auth/login" className="text-primary font-bold hover:text-primary-dark">
-                Sign In
+                {isMounted ? t.auth.signIn : 'Sign In'}
               </Link>
             </p>
           </div>
 
           <p className="text-[11px] text-gray-400 text-center mt-4">
-            By creating an account, you agree to our{' '}
-            <Link href="/terms" className="text-primary hover:underline">Terms & Conditions</Link>{' '}
-            and{' '}
-            <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
+            {isMounted ? t.auth.agreeTerms : 'By creating an account, you agree to our'}{' '}
+            <Link href="/terms" className="text-primary hover:underline">{isMounted ? t.auth.terms : 'Terms & Conditions'}</Link>{' '}
+            {isMounted ? t.auth.and : 'and'}{' '}
+            <Link href="/privacy" className="text-primary hover:underline">{isMounted ? t.auth.privacy : 'Privacy Policy'}</Link>.
           </p>
         </div>
       </div>

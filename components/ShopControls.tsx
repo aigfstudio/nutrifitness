@@ -1,5 +1,9 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+import { useLanguageStore } from '@/store/useLanguageStore'
+import { translations } from '@/lib/i18n/translations'
+
 interface ShopControlsProps {
   sort: string
   activeCategory: string
@@ -8,6 +12,14 @@ interface ShopControlsProps {
 }
 
 export function ShopControls({ sort, activeCategory, categories, searchParams }: ShopControlsProps) {
+  const [isMounted, setIsMounted] = useState(false)
+  const { language } = useLanguageStore()
+  const t = translations[language]
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   const handleSort = (value: string) => {
     const params = new URLSearchParams(searchParams)
     params.set('sort', value)
@@ -39,16 +51,16 @@ export function ShopControls({ sort, activeCategory, categories, searchParams }:
 
       {/* Sort */}
       <div className="flex items-center gap-2 ml-auto">
-        <span className="text-sm text-gray-500">Sort By:</span>
+        <span className="text-sm text-gray-500">{isMounted ? t.productsList.sortBy : 'Sort By:'}</span>
         <select
           value={sort}
           onChange={(e) => handleSort(e.target.value)}
           className="border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:border-dark bg-white rounded-sm"
         >
-          <option value="featured">Top Sellers</option>
-          <option value="price_asc">Price: Low to High</option>
-          <option value="price_desc">Price: High to Low</option>
-          <option value="rating">Customer Rating</option>
+          <option value="featured">{isMounted ? t.productsList.topSellers : 'Top Sellers'}</option>
+          <option value="price_asc">{isMounted ? t.productsList.priceLowHigh : 'Price: Low to High'}</option>
+          <option value="price_desc">{isMounted ? t.productsList.priceHighLow : 'Price: High to Low'}</option>
+          <option value="rating">{isMounted ? t.productsList.rating : 'Customer Rating'}</option>
         </select>
       </div>
     </div>
